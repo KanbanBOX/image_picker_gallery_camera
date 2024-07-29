@@ -6,19 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerGC {
-  static Future pickImage(
+  static Future<XFile?> pickImage(
       {required BuildContext context,
-      required ImgSource source,
-      bool? enableCloseButton,
-      double? maxWidth,
-      double? maxHeight,
-      Icon? cameraIcon,
-      Icon? galleryIcon,
-      Widget? cameraText,
-      Widget? galleryText,
-      bool barrierDismissible = false,
-      Icon? closeIcon,
-      int? imageQuality}) async {
+        required ImgSource source,
+        bool? enableCloseButton,
+        double? maxWidth,
+        double? maxHeight,
+        Icon? cameraIcon,
+        Icon? galleryIcon,
+        Widget? cameraText,
+        Widget? galleryText,
+        bool barrierDismissible = false,
+        Icon? closeIcon,
+        int? imageQuality}) async {
     assert(imageQuality == null || (imageQuality >= 0 && imageQuality <= 100));
 
     if (maxWidth != null && maxWidth < 0) {
@@ -31,17 +31,17 @@ class ImagePickerGC {
 
     switch (source) {
       case ImgSource.Camera:
-        return await ImagePicker().getImage(
+        return await ImagePicker().pickImage(
             source: ImageSource.camera,
             maxWidth: maxWidth,
             maxHeight: maxHeight);
       case ImgSource.Gallery:
-        return await ImagePicker().getImage(
+        return await ImagePicker().pickImage(
             source: ImageSource.gallery,
             maxWidth: maxWidth,
             maxHeight: maxHeight);
       case ImgSource.Both:
-        return await showDialog<void>(
+        return await showDialog<XFile?>(
           context: context,
           barrierDismissible: barrierDismissible, // user must tap button!
           builder: (BuildContext context) {
@@ -54,26 +54,26 @@ class ImagePickerGC {
                 children: <Widget>[
                   enableCloseButton == true
                       ? GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Align(
-                              alignment: Alignment.topRight,
-                              child: closeIcon ??
-                                  Icon(
-                                    Icons.close,
-                                    size: 14,
-                                  )),
-                        )
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Align(
+                        alignment: Alignment.topRight,
+                        child: closeIcon ??
+                            Icon(
+                              Icons.close,
+                              size: 14,
+                            )),
+                  )
                       : Container(),
                   InkWell(
                     onTap: () async {
-                      ImagePicker()
-                          .getImage(
-                              source: ImageSource.gallery,
-                              maxWidth: maxWidth,
-                              maxHeight: maxHeight,
-                              imageQuality: imageQuality)
+                      XFile? image = await ImagePicker()
+                          .pickImage(
+                          source: ImageSource.gallery,
+                          maxWidth: maxWidth,
+                          maxHeight: maxHeight,
+                          imageQuality: imageQuality)
                           .then((image) {
                         Navigator.pop(context, image);
                       });
@@ -84,9 +84,9 @@ class ImagePickerGC {
                           leading: galleryIcon != null
                               ? galleryIcon
                               : Icon(
-                                  Icons.image,
-                                  color: Colors.deepPurple,
-                                )),
+                            Icons.image,
+                            color: Colors.deepPurple,
+                          )),
                     ),
                   ),
                   Container(
@@ -96,11 +96,11 @@ class ImagePickerGC {
                   ),
                   InkWell(
                     onTap: () async {
-                      ImagePicker()
-                          .getImage(
-                              source: ImageSource.camera,
-                              maxWidth: maxWidth,
-                              maxHeight: maxHeight)
+                      XFile? image = await ImagePicker()
+                          .pickImage(
+                          source: ImageSource.camera,
+                          maxWidth: maxWidth,
+                          maxHeight: maxHeight)
                           .then((image) {
                         Navigator.pop(context, image);
                       });
@@ -111,9 +111,9 @@ class ImagePickerGC {
                           leading: cameraIcon != null
                               ? cameraIcon
                               : Icon(
-                                  Icons.camera,
-                                  color: Colors.deepPurple,
-                                )),
+                            Icons.camera,
+                            color: Colors.deepPurple,
+                          )),
                     ),
                   ),
                 ],
